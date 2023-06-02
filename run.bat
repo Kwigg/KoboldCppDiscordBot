@@ -1,5 +1,4 @@
 @echo off
-
 REM Set the console window size to 80 columns by 25 lines
 mode con lines=25
 
