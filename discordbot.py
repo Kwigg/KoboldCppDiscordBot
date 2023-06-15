@@ -85,9 +85,7 @@ try:
                 name1 = "User"
                 name2 = "Character"
                 tavern_character_data = upload_tavern_character(img, name1, name2)
-            with open(
-                os.path.join(characters_folder, tavern_character_data + ".json")
-            ) as read_file:
+            with open(os.path.join(characters_folder, tavern_character_data + ".json")) as read_file:
                 character_data = json.load(read_file)
                 # characters.append(character_data)
             read_file.close()
@@ -104,9 +102,7 @@ except:
 # Load character data from JSON files in the character folder
 for filename in os.listdir(characters_folder):
     if filename.endswith(".json"):
-        with open(
-            os.path.join(characters_folder, filename), encoding="utf-8"
-        ) as read_file:
+        with open(os.path.join(characters_folder, filename), encoding="utf-8") as read_file:
             character_data = json.load(read_file)
             # Add the filename as a key in the character data dictionary
             character_data["char_filename"] = filename
@@ -176,20 +172,10 @@ async def on_ready():
             await bot.user.edit(username=char_name, avatar=avatar_data)
             print(f"No image found for {char_name}. Setting image to default.")
         except discord.errors.HTTPException as error:
-            if (
-                error.code == 50035
-                and "Too many users have this username, please try another"
-                in error.text
-            ):
-                new_name = input(
-                    "Too many users have this username, Enter a new name(tip: üse án àccent lèttèr ): "
-                )
+            if (error.code == 50035 and ("Too many users have this username, please try another" in error.text)):
+                new_name = input("Too many users have this username, Enter a new name(tip: üse án àccent lèttèr ): ")
                 await bot.user.edit(username=new_name, avatar=avatar_data)
-            elif (
-                error.code == 50035
-                and "You are changing your username or Discord Tag too fast. Try again later."
-                in error.text
-            ):
+            elif (error.code == 50035 and ("You are changing your username or Discord Tag too fast. Try again later." in error.text)):
                 pass
             else:
                 raise error
@@ -208,9 +194,7 @@ async def on_ready():
             else:
                 print(f"Channel with ID {bot.channel_id} is not a text channel")
         except AttributeError:
-            print(
-                "\n\n\n\nERROR: Unable to retrieve channel from .env \nPlease make sure you're using a valid channel ID, not a server ID."
-            )
+            print("\n\n\n\nERROR: Unable to retrieve channel from .env \nPlease make sure you're using a valid channel ID, not a server ID.")
 
 
 # COG LOADER
@@ -226,9 +210,7 @@ async def load_cogs() -> None:
                 if extension == "pygbot":
                     bot.endpoint_connected = False
                 if not bot.debug:
-                    logging.error(
-                        f"\n\nIssue with ENDPOINT. Please check your ENDPOINT in the .env file"
-                    )
+                    logging.error(f"\n\nIssue with ENDPOINT. Please check your ENDPOINT in the .env file")
                 else:
                     exception = f"{type(e).__name__}: {e}"
                     print(f"Failed to load extension {extension}\n{exception}")
@@ -239,6 +221,4 @@ if bot.endpoint_connected:
     try:
         bot.run(DISCORD_BOT_TOKEN)
     except discord.errors.LoginFailure:
-        print(
-            "\n\n\n\nThere is an error with the Discord Bot token. Please check your .env file"
-        )
+        print("\n\n\n\nThere is an error with the Discord Bot token. Please check your .env file")

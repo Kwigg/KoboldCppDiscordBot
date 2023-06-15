@@ -11,19 +11,13 @@ from transformers import BlipForConditionalGeneration, BlipProcessor
 class ImageCaptionCog(commands.Cog, name="image_caption"):
     def __init__(self, bot):
         self.bot = bot
-        self.processor = BlipProcessor.from_pretrained(
-            "Salesforce/blip-image-captioning-base"
-        )
-        self.model = BlipForConditionalGeneration.from_pretrained(
-            "Salesforce/blip-image-captioning-base", torch_dtype=torch.float32
-        ).to("cpu")
+        self.processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+        self.model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", torch_dtype=torch.float32).to("cpu")
 
     @commands.command(name="image_comment")
     async def image_comment(self, message: discord.Message, message_content) -> None:
         # Check if the message content is a URL
-        url_pattern = re.compile(
-            r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
-        )
+        url_pattern = re.compile(r"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+")
         if "https://tenor.com/view/" in message_content:
             # Extract the Tenor GIF URL from the message content
             start_index = message_content.index("https://tenor.com/view/")
@@ -54,15 +48,11 @@ class ImageCaptionCog(commands.Cog, name="image_caption"):
 
         # Generate the image caption
         caption = self.caption_image(image)
-        message_content = (
-            f"{message_content} [{message.author.name} posts a picture of {caption}]"
-        )
+        message_content = (f"{message_content} [{message.author.name} posts a picture of {caption}]")
         return message_content
 
     def caption_image(self, raw_image):
-        inputs = self.processor(raw_image.convert("RGB"), return_tensors="pt").to(
-            "cpu", torch.float32
-        )
+        inputs = self.processor(raw_image.convert("RGB"), return_tensors="pt").to("cpu", torch.float32)
         out = self.model.generate(**inputs, max_new_tokens=50)
         caption = self.processor.decode(out[0], skip_special_tokens=True)
 

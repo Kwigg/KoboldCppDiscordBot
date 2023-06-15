@@ -15,9 +15,7 @@ class ListenerCog(commands.Cog, name="listener"):
         self.msg_counter = 0
 
     async def has_image_attachment(self, message_content):
-        url_pattern = re.compile(
-            r"http[s]?://[^\s/$.?#].[^\s]*\.(jpg|jpeg|png|gif)", re.IGNORECASE
-        )
+        url_pattern = re.compile(r"http[s]?://[^\s/$.?#].[^\s]*\.(jpg|jpeg|png|gif)", re.IGNORECASE)
         tenor_pattern = re.compile(r"https://tenor.com/view/[\w-]+")
         for attachment in message_content.attachments:
             if attachment.filename.lower().endswith((".jpg", ".jpeg", ".png", ".gif")):
@@ -35,18 +33,12 @@ class ListenerCog(commands.Cog, name="listener"):
     async def generate_response(self, message):
         # image handling
         if await self.has_image_attachment(message):
-            image_response = await self.bot.get_cog("image_caption").image_comment(
-                message, message.content
-            )
-            response = await self.bot.get_cog("chatbot").chat_command(
-                message, image_response
-            )
+            image_response = await self.bot.get_cog("image_caption").image_comment(message, message.content)
+            response = await self.bot.get_cog("chatbot").chat_command(message, image_response)
             return response
         else:
             # No image. Normal text response
-            response = await self.bot.get_cog("chatbot").chat_command(
-                message, message.content
-            )
+            response = await self.bot.get_cog("chatbot").chat_command(message, message.content)
             return response
 
     @commands.Cog.listener()
@@ -56,9 +48,7 @@ class ListenerCog(commands.Cog, name="listener"):
             return
 
         # if a reply message is not for the bot - do nothing
-        if message.mentions and self.bot.user.name not in [
-            mention.name for mention in message.mentions
-        ]:
+        if message.mentions and self.bot.user.name not in [mention.name for mention in message.mentions]:
             return
 
         """
@@ -66,10 +56,7 @@ class ListenerCog(commands.Cog, name="listener"):
 		This part needs to be as basic as possible
 		"""
         # if message is channel id argument or DM or
-        if (
-            message.channel.id in [int(channel_id) for channel_id in self.bot.guild_ids]
-            or message.guild is None
-        ):
+        if (message.channel.id in [int(channel_id) for channel_id in self.bot.guild_ids] or message.guild is None):
             response = None
 
             with self.lock:
@@ -77,9 +64,7 @@ class ListenerCog(commands.Cog, name="listener"):
 
             msg_count_at_start = self.msg_counter
             async with message.channel.typing():
-                future = asyncio.run_coroutine_threadsafe(
-                    self.generate_response(message), self.loop
-                )
+                future = asyncio.run_coroutine_threadsafe(self.generate_response(message), self.loop)
                 while not future.done():
                     await asyncio.sleep(1)
                 response = future.result()

@@ -29,13 +29,9 @@ class DevCommands(commands.Cog, name="dev_commands"):
     async def reload(self, interaction: discord.Interaction, cog: str):
         try:
             await self.bot.reload_extension(f"cogs.{cog}")
-            await interaction.response.send_message(
-                embed=embedder(f"Reloaded `{cog}`."), delete_after=3
-            )
+            await interaction.response.send_message(embed=embedder(f"Reloaded `{cog}`."), delete_after=3)
         except Exception:
-            await interaction.response.send_message(
-                embed=embedder(f"Reloaded `{cog}` failed."), delete_after=3
-            )
+            await interaction.response.send_message(embed=embedder(f"Reloaded `{cog}` failed."), delete_after=3)
 
     # Not currently used
     # @app_commands.command(name="persona", description="Retrieve Character info")
