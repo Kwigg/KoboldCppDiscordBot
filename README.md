@@ -41,4 +41,6 @@ Go to the original repo for more instructions.
 | Reload Cog     | `/reload <name>` | Lets you reload a specific cog instead of needing to restart everything.               |
 |Regenerate Last Message| `/regenerate`| Removes the last message and will generate another one                |
 | Follow up      | `/followup`      | Tell the bot to generate another message on top of the last one it sent  |
-| Reset Conversation    | `/reset_conversation`      | Erases the current conversation and returns the context window to a clean slate. |
+| Reset Conversation | `/reset_conversation` | Erases the current conversation and returns the context window to a clean slate. |
+| Enable Multiline | `/enable_multiline_response` | Allows the bot to reply with multiple lines. Can get more information, but generation will take longer and can have more opportunity for hallucinations |
+| Disable Multiline | `/disable_multiline_response` | If multiline response is enabled, disable it so the bot only replies with a single paragraph/sentence |
