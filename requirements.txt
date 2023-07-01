@@ -5,3 +5,4 @@ discord.py
 transformers
 torch
 torchvision
+sentencepiece
