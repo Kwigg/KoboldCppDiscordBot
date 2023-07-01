@@ -127,6 +127,8 @@ class Chatbot:
         start_dialogue += "<START>\n"
         with open(self.convo_filename, "w", encoding="utf-8") as f:
             f.write(start_dialogue)
+        del self.conversation_queue
+        self.conversation_queue = []
         self.push_lines_to_queue_respecting_context_limits(start_dialogue.splitlines())
         return True
 
