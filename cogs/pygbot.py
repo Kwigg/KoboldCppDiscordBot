@@ -314,7 +314,10 @@ class ChatbotCog(commands.Cog, name="chatbot"):
     @app_commands.command(name="koboldput", description="Set the value of a parameter in the API")
     async def koboldput(self, interaction: discord.Interaction, parameter: str, value: str):
         try:
-            model_config[parameter] = float(value)
+            if (parameter == "max_context_length" or parameter == "max_length"):
+                model_config[parameter] = int(value)
+            else:
+                model_config[parameter] = float(value)
             await interaction.response.send_message(
                 embed=embedder(f"Parameter '{parameter}' updated to: {value}"),
                 delete_after=3,
