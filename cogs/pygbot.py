@@ -95,7 +95,6 @@ class Chatbot:
         return prompt_string
 
     def push_lines_to_queue_respecting_context_limits(self, in_strings):
-        print(in_strings)
         for input_line in in_strings: 
             string_token_count = count_tokens_in_string(input_line)
             # Need to clear items until our new string fits
@@ -132,7 +131,6 @@ class Chatbot:
         return True
 
     async def send_prompt_and_parse_result(self, message):
-        print(self.conversation_queue)
         print(message)
         if message is not None:
             if message.author.nick not in seen_users:
