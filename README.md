@@ -1,6 +1,6 @@
 # Make sure to show some love to ausboss, all I did was tweak their work!
 
-# Discord Tavern Style Chatbot for KoboldCpp with Pygmalion-style chat models
+# Discord Tavern Style Chatbot for KoboldCpp with LLaMA based chat models
 This is a discord bot that connects to a KoboldAI endpoint and uses the Pygmalion style chat prompt system to communicate back and forth. It supports TavernAI cards and jsons.
 
 I have made the following changes from the original repo by ausboss:
@@ -8,6 +8,8 @@ I have made the following changes from the original repo by ausboss:
 > Changed the variables to be submitted in the prompt post request. It appears that this is the preferred way for KoboldCpp to work
 
 > Tweaked the variables to be LLaMA model compatible.
+
+> Introduced sentencepiece tokenisation of messages, as to feed the correct amount of tokens to koboldcpp. This change essentially adds support for the new RoPE scaling, as context size will be correctly handled by the bot.
 
 > Improved support for models not strictly trained on the Pyg dataset by detecting and trimming cases where the model starts hallucinating what users say to it without making new lines.
 
