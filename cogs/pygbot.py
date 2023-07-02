@@ -250,48 +250,42 @@ class ChatbotCog(commands.Cog, name="chatbot"):
         await interaction.delete_original_response()
         await interaction.channel.send(await self.chatbot.follow_up())
 
-    """
-
-    I can't be arsed to deal with this function right now
-
-        @app_commands.command(name="regenerate", description="regenerate last message")
-        async def regenerate(self, interaction: discord.Interaction) -> None:
-            await interaction.response.defer()
-            await interaction.delete_original_response()
-            if interaction.guild:
-                server_name = interaction.channel.name
-            else:
-                server_name = interaction.author.name
-            chatlog_filename = os.path.join( self.chatlog_dir, f"{self.chatbot.char_name}_{server_name}_chatlog.log")
-            if ((interaction.guild and self.chatbot.convo_filename != chatlog_filename) or
-                (not interaction.guild and self.chatbot.convo_filename != chatlog_filename)
-            ):
-                await self.chatbot.set_convo_filename(chatlog_filename)
-            # Get the last message sent by the bot in the channel
-            async for message in interaction.channel.history(limit=1):
-                if message.author == self.bot.user:
-                    await message.delete()
-                    for i in range(len(lines) - 1, -1, -1):
-                        if lines[i].startswith(f"{self.chatbot.char_name}:"):
-                            self.chatbot.remove_item_at_index_and_update_token_count(i)
-                            break
-                    break  # Exit the loop after deleting the message
-            with open(self.chatbot.convo_filename, "r", encoding="utf-8") as f:
-                lines = f.readlines()
-                # Find the last line that matches "self.chatbot.char_name: {message.content}"
-                last_line_num_to_overwrite = None
-                for i in range(len(lines) - 1, -1, -1):
-                    if f"{self.chatbot.char_name}: {message.content}" in lines[i]:
-                        last_line_num_to_overwrite = i
-                        break
-                if last_line_num_to_overwrite is not None:
-                    lines[last_line_num_to_overwrite] = ""
-                    # Modify the last line that matches "self.chatbot.char_name: {message.content}"
-                with open(self.chatbot.convo_filename, "w", encoding="utf-8") as f:
-                    f.writelines(lines)
-                    f.close()
-            await interaction.channel.send(await self.chatbot.follow_up())
-    """
+    @app_commands.command(name="regenerate", description="regenerate last message")
+    async def regenerate(self, interaction: discord.Interaction) -> None:
+        await interaction.response.defer()
+        await interaction.delete_original_response()
+        if interaction.guild:
+            server_name = interaction.channel.name
+        else:
+            server_name = interaction.author.name
+        chatlog_filename = os.path.join( self.chatlog_dir, f"{self.chatbot.char_name}_{server_name}_chatlog.log")
+        if ((interaction.guild and self.chatbot.convo_filename != chatlog_filename) or
+            (not interaction.guild and self.chatbot.convo_filename != chatlog_filename)
+        ):
+            await self.chatbot.set_convo_filename(chatlog_filename)
+        # Get the last message sent by the bot in the channel
+        async for message in interaction.channel.history(limit=1):
+            if message.author == self.bot.user:
+                await message.delete()
+                for i in range(len(self.chatbot.conversation_queue)):
+                    if self.chatbot.conversation_queue[i][0].startswith(f"{self.chatbot.char_name}:"):
+                        self.chatbot.remove_item_at_index_and_update_token_count(i)
+                        break  # Exit the loop after deleting the message
+        with open(self.chatbot.convo_filename, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            # Find the last line that matches "self.chatbot.char_name: {message.content}"
+            last_line_num_to_overwrite = None
+            for i in range(len(lines) - 1, -1, -1):
+                if f"{self.chatbot.char_name}: {message.content}" in lines[i]:
+                    last_line_num_to_overwrite = i
+                    break
+            if last_line_num_to_overwrite is not None:
+                lines[last_line_num_to_overwrite] = ""
+                # Modify the last line that matches "self.chatbot.char_name: {message.content}"
+            with open(self.chatbot.convo_filename, "w", encoding="utf-8") as f:
+                f.writelines(lines)
+                f.close()
+        await interaction.channel.send(await self.chatbot.follow_up())
 
     async def api_get(self, parameter):
         response = requests.get(f"{self.chatbot.endpoint}/api/v1/config/{parameter}")
